@@ -222,9 +222,7 @@ def predict():
 @app.route('/initiate/',methods=['POST','GET']) # trigger the URL
 def initiate():
     
-    names=['Aakash','Ahad','Anirudha','Ankita','Archana','Ashwin','Dhruv','Ishani','Manish',
-       'Meera','Neha','Noufan','Pooja','Praveen','Raj','Rohit','Shital','Shraddha','Siddharth',
-       'Smitha','Sneha','Suhas','Suresh','Taranjit','Tushar','Umesh','Vaibhav']
+    names=['List of names']
     video=cv2.VideoCapture(0)
     face_cascade=cv2.CascadeClassifier("C:\\Users\\DRV\\Desktop\\haarcascade_frontalface_default.xml")
     id=0
@@ -276,7 +274,8 @@ def initiate():
         #cv2.imshow("Capturing image/video",frame)
         #if (cv2.waitKey(1)==ord('q')):
         break;
-    webbrowser.open_new_tab("https://www.muniversity.mobi/login/face_login.php?userId="+str(id)+"&flag=1")
+    webbrowser.open_new_tab("url")
+
 
     video.release()
     cv2.destroyAllWindows()
