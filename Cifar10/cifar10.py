@@ -106,3 +106,14 @@ cnn_model.add(Dense(units = 512, activation = 'relu'))
 cnn_model.add(Dense(units = number_categories, activation = 'softmax'))
 
 '''Train the model'''
+# Categorical cross entropy: If we use this loss, we will train a CNN to output a probability over the C classes for each image. It is used for multi-class classification.
+# Optimizer: Optimizers update the weight parameters to minimize the loss function. Loss function acts as guides to the terrain telling optimizer if it is moving in the right direction to reach the bottom of the valley, the global minimum.
+cnn_model.compile(loss = 'categorical_crossentropy', optimizer = keras.optimizers.rmsprop(lr = 0.001), metrics = ['accuracy'])
+
+# create a history variable to log all changes done while the model gets trained
+# shuffle = True, will shuffle the images
+history = cnn_model.fit(X_train, y_train, batch_size = 32, epochs = 2, shuffle = True)
+
+'''Evaluate model'''
+
+
