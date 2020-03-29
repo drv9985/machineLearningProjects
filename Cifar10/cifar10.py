@@ -24,6 +24,8 @@ from keras.models import Sequential#for model building in sequential fashion(Lef
 from keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, Dense, Flatten, Dropout
 from keras.optimizers import Adam
 from keras.callbacks import TensorBoard
+from sklearn.metrics import confusion_matrix
+import os
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 ''''''
 
@@ -115,5 +117,41 @@ cnn_model.compile(loss = 'categorical_crossentropy', optimizer = keras.optimizer
 history = cnn_model.fit(X_train, y_train, batch_size = 32, epochs = 2, shuffle = True)
 
 '''Evaluate model'''
+evaluation = cnn_model.evaluate(X_test, y_test)
+print('Test Accuracy: {}'.format(evaluation[1]))
 
+# predict class of images
+predicted_classes = cnn_model.predict_classes(X_test)
+predicted_classes
 
+# compare with y_test
+y_test = y_test.argmax(1)# converts categorical to decimal number
+
+L = 7
+W = 7
+fig, axes = plt.subplots(L, W, figsize = (12,12))
+axes= axes.ravel()
+
+for i in np.arange(0, L*W):
+    axes[i].imshow(X_test[i])
+    axes[i].set_title('Prediction = {} \n True = {}'.format(predicted_classes[i], y_test[i]))
+    axes[i].axis('off')
+    
+plt.subplots_adjust(wspace = 1)
+    
+#confusion matrix 
+cm = confusion_matrix(y_test, predicted_classes)
+cm
+
+plt.figure(figsize = (10,10))
+sns.heatmap(cm, annot = True)
+
+'''Save the model'''
+directory = os.path.join(os.getcwd(), 'saved_models')
+    
+if not os.path.isdir(directory):
+    os.makedirs(directory)
+
+model_path = os.path.join(directory, 'keras_cifar10_trained_model.h5')
+cnn_model.save(model_path)
+    
