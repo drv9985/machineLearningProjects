@@ -114,7 +114,7 @@ cnn_model.compile(loss = 'categorical_crossentropy', optimizer = keras.optimizer
 
 # create a history variable to log all changes done while the model gets trained
 # shuffle = True, will shuffle the images
-history = cnn_model.fit(X_train, y_train, batch_size = 32, epochs = 2, shuffle = True)
+history = cnn_model.fit(X_train, y_train, batch_size = 32, epochs = 50, shuffle = True)
 
 '''Evaluate model'''
 evaluation = cnn_model.evaluate(X_test, y_test)
