@@ -82,7 +82,6 @@ forecast = m.predict(future)
 figure = m.plot(forecast, xlabel = 'Date', ylabel = 'Crime Rate')
 #visualiztion of seasonality
 figure = m.plot_components(forecast)
-#
 
 
 
