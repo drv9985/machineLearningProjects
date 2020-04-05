@@ -37,6 +37,30 @@ sns.countplot(x = 'year', data = avocado_df)
 #create df for fbprohet consumption
 avocado_prophet_df = avocado_df[['Date','AveragePrice']]
 
+'''Make predictions'''
+#rename column names for fbprophet consumption
+avocado_prophet_df = avocado_prophet_df.rename(columns={'Date' : 'ds', 'AveragePrice' : 'y'})
 
+m = Prophet()
+m.fit(avocado_prophet_df)
+#forecast the future
+future = m.make_future_dataframe(periods = 365)
+forecast = m.predict(future)
+figure = m.plot(forecast, xlabel = 'Date', ylabel = 'Price')
+figure = m.plot_components(forecast)
+
+'''Using fbprophet to get insights on a particular region'''
+avocado_df_sample = avocado_df[avocado_df['region'] == 'West']
+avocado_df_sample = avocado_df_sample.sort_values('Date')
+
+avocado_prophet_df_sample = avocado_df_sample.rename(columns={'Date' : 'ds', 'AveragePrice' : 'y'})
+
+m = Prophet()
+m.fit(avocado_prophet_df_sample)
+#forecast the future
+future = m.make_future_dataframe(periods = 365)
+forecast = m.predict(future)
+figure = m.plot(forecast, xlabel = 'Date', ylabel = 'Price')
+figure = m.plot_components(forecast)
 
 
