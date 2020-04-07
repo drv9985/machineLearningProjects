@@ -6,7 +6,6 @@ Created on Sun Apr  5 16:46:17 2020
 """
 '''Import Libraries'''
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 #NLP libraries
@@ -15,6 +14,8 @@ from nltk.corpus import stopwords
 stopwords.words('english')
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix
 
 '''Import dataset'''
 yelp_df = pd.read_csv('yelp.csv')
@@ -75,5 +76,28 @@ testing_sample = ['amazing food! highly recommended']
 
 #transform text --> numbers using vectorizer
 testing_sample_countvectorizer = vectorizer.transform(testing_sample)
+test_predict = NB_classifier.predict(testing_sample_countvectorizer)
+
+X = yelp_countvectorizer
+y = label
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
+NB_classifier.fit(X_train, y_train)
+
+'''Evaluating model'''
+y_predict_train = NB_classifier.predict(X_train)
+cm = confusion_matrix(y_train, y_predict_train)
+sns.heatmap(cm, annot = True)
+
+y_predict_test = NB_classifier.predict(X_test)
+cm = confusion_matrix(y_test, y_predict_test)
+sns.heatmap(cm, annot = True)
+
+print(classification_report(y_test, y_predict_test))
+
+
+
+
+
+
 
 
