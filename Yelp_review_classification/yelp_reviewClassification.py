@@ -13,6 +13,8 @@ import seaborn as sns
 import string
 from nltk.corpus import stopwords
 stopwords.words('english')
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
 
 '''Import dataset'''
 yelp_df = pd.read_csv('yelp.csv')
@@ -54,5 +56,24 @@ def message_cleaning(message):
 yelp_df_clean = yelp_df_1_5['text'].apply(message_cleaning)
 print(yelp_df_clean[0])# cleaned up review
 print(yelp_df_1_5['text'][0])# original review
+
+'''Apply vectorizer to yelp review'''
+vectorizer = CountVectorizer(analyzer = message_cleaning)
+yelp_countvectorizer = vectorizer.fit_transform(yelp_df_1_5['text'])
+print(vectorizer.get_feature_names())
+
+print(yelp_countvectorizer.toarray())
+
+'''Model training'''
+
+NB_classifier = MultinomialNB()
+label = yelp_df_1_5['stars'].values#target class
+NB_classifier.fit(yelp_countvectorizer, label)#input=yelp_countvectorizer, output=label
+
+testing_sample = ['amazing food! highly recommended']
+#testing_sample = ['shit food, made me sick']
+
+#transform text --> numbers using vectorizer
+testing_sample_countvectorizer = vectorizer.transform(testing_sample)
 
 
