@@ -1,49 +1,40 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 15 16:00:41 2020
+Spyder Editor
 
-@author: drv_m
+This is a temporary script file.
 """
-#Import Libraries
+
+# Importing libraries
 import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 
-#Import Dataset
-movie_titles_df = pd.read_csv('Movie_Id_Titles')
-movies_rating_df = pd.read_csv('u.data', sep = "\t", names = ["user_id","item_id","rating","timestamp"])
-movies_rating_df.drop(['timestamp'], axis = 1, inplace = True )
+#import datasets
+movie_title_df = pd.read_csv('Movie_Id_Titles')
 
-#Get statistical inferences
-movie_rating_df_stats = movies_rating_df.describe()
-movies_rating_df.info()
+# u.data contains data separated by tab i.e "\t" and name of the columns are = ['user_id','item_id','rating','timestamp']
+movie_ratings_df = pd.read_csv('u.data', sep = "\t", names = ['user_id','item_id','rating','timestamp'])
+#drop timestamp column
+movie_ratings_df = movie_ratings_df.drop('timestamp', axis=1)
 
-#Merge dataframes to get actual name of movies
-movies_rating_df = pd.merge(movies_rating_df, movie_titles_df, on = 'item_id')
+movie_description = movie_ratings_df.describe()
+movie_ratings_df.info()
 
-#Visualization of dataset
-individual_movie_rating_stats = movies_rating_df.groupby('title')['rating'].describe()
+movies_rating_df = pd.merge(movie_ratings_df, movie_title_df, on="item_id")
 
-ratings_df_mean = movies_rating_df.groupby('title')['rating'].describe()['mean']
-ratings_df_count = movies_rating_df.groupby('title')['rating'].describe()['count']
-ratings_mean_count_df = pd.concat([ratings_df_count, ratings_df_mean], axis = 1)
-ratings_mean_count_df = ratings_mean_count_df.reset_index() 
+userid_movietitle_matrix = movies_rating_df.pivot_table(index='user_id', columns='title', values='rating')
 
+#Recommender system initiation
+movie_correlations = userid_movietitle_matrix.corr(method='pearson', min_periods=80)
+myRatings = pd.read_csv('My_Ratings.csv')
 
-#Plot histogram
-ratings_mean_count_df['mean'].plot(bins = 100, kind = 'hist', color = 'r')
-ratings_mean_count_df['count'].plot(bins = 100, kind = 'hist', color = 'r')
+similar_movies_list = pd.Series()
 
-ratings_mean_count_df[ ratings_mean_count_df['mean'] == 5 ]  
-
-
-
-
-
-
-
-
+for i in range(0,2):
+    similar_movies = movie_correlations[myRatings['Movie Name'][i]].dropna()
+    similar_movies = similar_movies.map(lambda x:x*myRatings['Ratings'][i])
+    similar_movies_list = similar_movies_list.append(similar_movies)
+    
+similar_movies_list.sort_values(inplace = True, ascending = False)
 
 
 
